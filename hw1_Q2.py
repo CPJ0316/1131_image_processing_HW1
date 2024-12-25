@@ -4,14 +4,7 @@ import cv2
 image = cv2.imread("img2.jpg", cv2.IMREAD_GRAYSCALE)
 cv2.imshow("Original", image)
 parameter=[1,3,5,7]
-'''
-for i in parameter:
-    shaped = cv2.Laplacian(image, -1, i,1)  
-    adinfor_sharped = cv2.addWeighted(image, 1.0, shaped, -0.5, 0)
-    cv2.namedWindow( "L_shaped_"+str(i), cv2.WINDOW_NORMAL )
-    cv2.imshow("L_shaped_"+str(i), adinfor_sharped)
-    cv2.imwrite("hw1_L\\L_img1_shaped_"+str(i)+".jpg", adinfor_sharped)
-'''
+
 image_2 = cv2.imread("img2.jpg", cv2.IMREAD_GRAYSCALE)
 for i in parameter:
     shaped_2=cv2.Sobel(image_2, -1, 1, 1, i)
@@ -19,6 +12,7 @@ for i in parameter:
     cv2.namedWindow( "s_shaped_"+str(i), cv2.WINDOW_NORMAL )
     cv2.imshow("s_shaped_"+str(i), adinfor_sharped_2)
     cv2.imwrite("hw1_s\\s_img1_shaped__"+str(i)+".jpg", adinfor_sharped_2)
+    cv2.imwrite("hw1_s_edge\\s_img1_shaped__"+str(i)+".jpg", shaped_2)
 
 '''
 cv2.Sobel(src, ddepth, dx, dy, ksize, scale=1, delta=0, borderType=cv2.BORDER_DEFAULT)
@@ -72,11 +66,12 @@ for i in parameter:
     img_back = np.uint8(img_back)
 
     # Step 6: Combine the sharpened details with the original
-    adinfor_sharped = cv2.addWeighted(image, 0, img_back, 1, 0)
+    adinfor_sharped = cv2.addWeighted(image, 1, img_back, -0.5, 0)
 
     # Display the results
     cv2.namedWindow( "f_shaped_"+str(i), cv2.WINDOW_NORMAL )
     cv2.imshow("f_shaped_"+str(i), adinfor_sharped)
     cv2.imwrite("hw1_f\\f_img1_shaped_"+str(i)+".jpg", adinfor_sharped)
+    cv2.imwrite("hw1_f_edge\\f_img1_shaped_"+str(i)+".jpg", img_back)
 
 cv2.waitKey(0)
