@@ -38,34 +38,33 @@ alpha, beta:權重係數
 gamma:偏移量（亮度調整）
 '''
 
-
-for i in parameter:
-    # Step 1: Apply Fourier Transform
+parameter_f=[1,3,5,7,11,21,51]
+for i in parameter_f:
+    # 傅利葉
     dft = cv2.dft(np.float32(image), flags=cv2.DFT_COMPLEX_OUTPUT)
     dft_shift = np.fft.fftshift(dft)
 
-    # Step 2: Create a High-Pass Filter
+    #Create Filter
     rows, cols = image.shape
-    crow, ccol = rows // 2, cols // 2  # Center of the frequency domain
-
-    # Create a mask with high frequencies
+    crow, ccol = rows // 2, cols // 2
+    
+    # Create mask
     mask = np.ones((rows, cols, 2), np.uint8)
-    r = i  # Radius of the low-frequency block to suppress
-    mask[crow - r:crow + r, ccol - r:ccol + r] = 0
-
-    # Step 3: Apply the High-Pass Filter
+    r=(i-1)//2
+    mask[crow - r:crow + r + 1, ccol - r:ccol + r + 1] = 0
+    
+    #Apply the Filter
     fshift = dft_shift * mask
 
-    # Step 4: Inverse Fourier Transform
+    #逆傅立葉
     f_ishift = np.fft.ifftshift(fshift)
     img_back = cv2.idft(f_ishift)
-    img_back = cv2.magnitude(img_back[:, :, 0], img_back[:, :, 1])
+    img_back = cv2.magnitude(img_back[:, :, 0], img_back[:, :, 1])#取兩個參數的平方和取根
 
-    # Step 5: Normalize for display
+    # normalize
     cv2.normalize(img_back, img_back, 0, 255, cv2.NORM_MINMAX)
     img_back = np.uint8(img_back)
 
-    # Step 6: Combine the sharpened details with the original
     adinfor_sharped = cv2.addWeighted(image, 1, img_back, -0.5, 0)
 
     # Display the results
